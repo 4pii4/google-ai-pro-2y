@@ -1,0 +1,20 @@
+# Python
+.venv/
+.venv16/
+__pycache__/
+*.pyc
+
+# Frida agent
+agent/node_modules/
+# 同梱バンドルはコミットする（node/npm が無い環境でも動かすため）
+# agent/agent.iife.js
+
+# adb
+tools/
+
+# 実行結果
+ultra0-report/
+
+# 推敲ツール（yomiyasu）の生成物
+.yomiyasu/
+*.final.md
