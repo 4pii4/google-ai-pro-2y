@@ -60,6 +60,56 @@ Google AI Pro (5 TB)
 
 再起動後も同じ状態であることを確認済み（サーバー側で保持）。
 
+## 2026-11-25 追加調査: Ultra 系 tier と割引オファーの有無
+
+iOS 向けプロジェクト（`crhywun/g1-acq`）が扱っていた SKU 名を取り込み、候補を
+132 件から 287 件に増やして再スキャンした。
+
+| 項目 | 値 |
+|---|---|
+| 候補 | 7 tier × 41（1 variant + 8 期間 × 5 suffix）= 287 件 |
+| tier | `2tb.ai`, `play.2tb.ai`, `5tb.ai`, `ai.pro`, `20tb`, `play.20tb`, `ai.ultra` |
+| suffix | `_eft`, `_ip_90p`, `_ip_90p.acq`, `_ip_95p.acq`, `_ip_75p.acq` |
+| 実行時間 | 36.6 秒（バッチ 20 件・タイムアウト 20 秒、タイムアウト 0 件） |
+
+結果は、`g1.2tb.ai` 系の 8 SKU だけが出現し、
+Ultra 系（`20tb` / `play.20tb` / `ai.ultra`）と割引系（`_ip_90p` / `_ip_95p.acq` /
+`_ip_75p.acq`）は 0 件だった。
+
+照会経路そのものが死んでいないことは、次の 2 点で確認した。
+
+- 対照実験: 同じ実行で正常な `g1.2tb.ai.18months_eft` を指定すると
+  `eft-18months`（P1Y6M・0 micros）が返った
+- 個別確認: `g1.30tb`（文法に乗らない裸の SKU）、`g1.20tb`、`g1.ai.ultra` を
+  直接指定しても 0 件だった
+
+このアカウント（日本リージョン）では Pro 5TB の `g1.2tb.ai` だけが提供されており、
+Ultra 系と割引オファーは Play から返らない。
+
+## 2026-11-25 追記: g1-acq v7.6.0 の Ultra 1ヶ月無料トライアル検証
+
+iOS 側プロジェクトが v7.6.0（2026-11-24）で Ultra の対象を
+3ヶ月 90%オフから **1ヶ月無料トライアル**へ変更した。新しい SKU は
+`g1.20tb.1month_eft.acq` と `g1.ai.ultra.1month_eft.acq` で、
+`suffix` に `_eft.acq` を足して候補を 343 件に増やし、実機で確認した。
+
+| 確認した SKU | 結果 |
+|---|---|
+| `g1.20tb.1month_eft.acq` | 0 件 |
+| `g1.ai.ultra.1month_eft.acq` | 0 件 |
+| `g1.20tb.1month_eft` | 0 件 |
+| `g1.ai.ultra.1month_eft` | 0 件 |
+| `g1.20tb.3months_ip_90p.acq` | 0 件 |
+| `g1.ai.ultra.3months_ip_90p.acq` | 0 件 |
+
+全体スキャン（343 件・46 秒・タイムアウト 0 件）でも、出現したのは
+`g1.2tb.ai` 系の 8 SKU だけだった。同じ実行で `g1.2tb.ai.18months_eft` は
+`eft-18months` を返しているため、照会経路は正常である。
+
+つまり、このアカウント（日本リージョン）の Play には Ultra 系 SKU が存在しない。
+g1-acq 側でも issue #2（Apple の收銀台で "Unable to Complete Purchase"）と
+issue #1（Google アプリが原価のまま）が未解決のままで、購入成功の報告は確認できていない。
+
 ## 観測された注意点
 
 - Frida 注入を繰り返すと Pixel 7a がブートループに入ることがあった
