@@ -12,7 +12,11 @@ from dataclasses import dataclass
 from typing import Iterable, Optional, Sequence
 
 G1_PREFIX = "g1"
-DEFAULT_TIERS = ("2tb.ai", "play.2tb.ai", "5tb.ai", "ai.pro")
+# Ultra 系 tier（20tb / play.20tb / ai.ultra）は iOS プロジェクト
+# https://github.com/crhywun/g1-acq が扱う product id 由来の知識で、
+# 実機での存在は未検証。ドットを含まないため parse_sku では
+# 期間トークン経路（_PERIOD_TOKEN_RE）で分解される。
+DEFAULT_TIERS = ("2tb.ai", "play.2tb.ai", "5tb.ai", "ai.pro", "20tb", "play.20tb", "ai.ultra")
 DEFAULT_PERIODS = (
     "1month",
     "2months",
@@ -23,7 +27,14 @@ DEFAULT_PERIODS = (
     "15months",
     "18months",
 )
-DEFAULT_SUFFIXES = ("_eft", "_ip_90p", "_ip_90p.acq", "_ip_95p.acq")
+DEFAULT_SUFFIXES = (
+    "_eft",
+    "_eft.acq",
+    "_ip_90p",
+    "_ip_90p.acq",
+    "_ip_95p.acq",
+    "_ip_75p.acq",
+)
 VARIANT_SUFFIX = ".subs_variant"
 
 # 出力・入力の両方で使うフィールドの許可リスト（ここに無い鍵は保存しない）。

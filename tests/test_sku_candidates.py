@@ -17,7 +17,7 @@ class CandidateGenerationTests(unittest.TestCase):
         self.assertEqual(sku_scanner_core.G1_PREFIX, "g1")
         self.assertEqual(
             sku_scanner_core.DEFAULT_TIERS,
-            ("2tb.ai", "play.2tb.ai", "5tb.ai", "ai.pro"),
+            ("2tb.ai", "play.2tb.ai", "5tb.ai", "ai.pro", "20tb", "play.20tb", "ai.ultra"),
         )
         self.assertEqual(
             sku_scanner_core.DEFAULT_PERIODS,
@@ -34,7 +34,7 @@ class CandidateGenerationTests(unittest.TestCase):
         )
         self.assertEqual(
             sku_scanner_core.DEFAULT_SUFFIXES,
-            ("_eft", "_ip_90p", "_ip_90p.acq", "_ip_95p.acq"),
+            ("_eft", "_eft.acq", "_ip_90p", "_ip_90p.acq", "_ip_95p.acq", "_ip_75p.acq"),
         )
 
         kwargs = {

@@ -69,7 +69,7 @@
 - `--skus` と `--candidates` は同時に指定できません。
 - `--timeout` は 1〜30 秒（既定 8）。範囲外は端末に接続する前にエラーになります。
 - `--batch-size` は 1 以上（既定 20）。0 はエラーになります。
-- `--limit` は候補数の上限で、表の行数とは関係ありません。既定の候補は 132 件で、
+- `--limit` は候補数の上限で、表の行数とは関係ありません。既定の候補は 343 件で、
   `--limit 120` のように絞ると ai.pro の長期間 SKU が気づかないうちに候補から外れます。
   全件を照会するなら `--limit` を省略してください。
 
@@ -97,6 +97,33 @@
 # または
 python3 -m unittest discover -s tests -v
 ```
+
+## Ultra 系 tier と iOS 由来の知識
+
+既定の候補には Ultra 系 tier（`20tb`、`play.20tb`、`ai.ultra`）と
+サフィックス `_eft.acq`、`_ip_75p.acq` が含まれます。いずれも iOS プロジェクト
+[g1-acq](https://github.com/crhywun/g1-acq) が扱う product id を手がかりに加えたもので、
+既定の候補は 7 tier ×（1 variant + 8 期間 × 6 サフィックス）= 343 件になります。
+
+- `_ip_90p` と `_ip_75p` は **90%オフ / 75%オフの有料割引**であり、無料トライアルではありません。
+- `_eft.acq` は無料トライアルに `.acq` が付いた形です。g1-acq の v7.6.0 が
+  Ultra 向けに使う `g1.20tb.1month_eft.acq` と `g1.ai.ultra.1month_eft.acq` がこれに当たります。
+- `.acq` は獲得向けプロモ SKU の目印です（`_ip_90p.acq` のように期間の後ろに付きます）。
+- `g1.30tb` は `g1.<tier>.<期間><サフィックス>` の文法に乗らない裸の SKU です。候補生成には
+  含まれないため、`scan query --skus g1.30tb` のように明示指定します。
+
+Ultra 系 tier と `g1.30tb` が実機で提供されているかは未検証です。候補に含まれることと、
+実際に offer が返ることは別に確かめる必要があります。
+
+### 表示データの書き換えと課金額
+
+g1-acq は `one.google.com` の応答を MITM し、本文中の `g1.*` の product id 文字列を
+正規表現で置換します。JSON の解析は行わず、価格・トライアル・適格性の項目には触れません。
+
+Android 側で購入を決めるのは Play Billing（`queryProductDetailsAsync` → offerToken）です。
+`one.google.com` の表示データを書き換えても課金額は変わらないため、表示の差し替えを
+割引やトライアルの適用として扱わないでください。スキャナはどちらの経路も操作せず、
+offer の内容を読むだけです。
 
 ## 終了コード
 
