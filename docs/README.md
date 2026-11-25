@@ -10,6 +10,7 @@
 | [ANDROID16-NOTES.md](ANDROID16-NOTES.md) | Android 16 / frida 17 で必要だった改造の技術メモ |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | 実際に踏んだエラーと、症状別の対処 |
 | [RESULTS.md](RESULTS.md) | 実測ログ（どのオファーで期限がどう伸びたか） |
+| [IOS-EXPERIMENTS.md](IOS-EXPERIMENTS.md) | iOS で試した記録（観測・書き換え・確定と未検証の切り分け） |
 
 ## 読む順番
 
